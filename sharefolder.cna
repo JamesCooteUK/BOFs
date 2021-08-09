@@ -1,0 +1,76 @@
+beacon_command_register(
+"sharefolder_create", 
+"Create folder and make it world read/writeable.",
+"sharefolder create C:\\path\\to\\folder shareName",
+);
+
+beacon_command_register(
+"sharefolder_delete", 
+"Delete folder.",
+"sharefolder delete C:\\path\\to\\folder",
+);
+
+
+
+alias sharefolder_create {
+	local('$barch $handle $data $args');
+
+	# figure out the arch of this session
+	$barch  = barch($1);
+
+	if(size(@_) != 3)
+	{
+		berror($1, "Incorrect usage!");
+		berror($1, beacon_command_detail("sharefolder_create"));
+		return;
+	}
+
+	# read in the right BOF file
+	$handle = openf(script_resource("sharefolder. $+ $barch $+ .o"));
+	$data   = readb($handle, -1);
+	closef($handle);
+
+	# pack our arguments
+	$args = bof_pack($1, "zZi", $2, $3, 0);
+		
+	# announce what we're doing
+	btask($1, "Create world read/writeable folder (@jkcoote)");
+		
+	# execute it.
+	beacon_inline_execute($1, $data, "go", $args);
+
+
+	
+}
+
+alias sharefolder_delete {
+	local('$barch $handle $data $args');
+
+	# figure out the arch of this session
+	$barch  = barch($1);
+
+	if(size(@_) != 2)
+	{
+		berror($1, "Incorrect usage!");
+		berror($1, beacon_command_detail("sharefolder_delete"));
+		return;
+	}
+
+	# read in the right BOF file
+	$handle = openf(script_resource("sharefolder. $+ $barch $+ .o"));
+	$data   = readb($handle, -1);
+	closef($handle);
+
+	
+	# pack our arguments
+	$args = bof_pack($1, "zZi", $2, "", 1);
+		
+	# announce what we're doing
+	btask($1, "Deleting folder (@jkcoote)");
+		
+	# execute it.
+	beacon_inline_execute($1, $data, "go", $args);
+	
+
+	
+}
