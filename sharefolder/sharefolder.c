@@ -7,6 +7,7 @@ DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$CreateDirectoryA(LPCSTR,LPSECURI
 DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI ADVAPI32$InitializeSecurityDescriptor(PSECURITY_DESCRIPTOR,DWORD);
 DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI ADVAPI32$SetSecurityDescriptorDacl(PSECURITY_DESCRIPTOR,BOOL,PACL,BOOL);
 DECLSPEC_IMPORT NET_API_STATUS WINAPI NETAPI32$NetShareAdd(LPWSTR,DWORD,PBYTE,PDWORD);
+DECLSPEC_IMPORT NET_API_STATUS WINAPI NETAPI32$NetShareDel(LPWSTR,LPWSTR,DWORD);
 DECLSPEC_IMPORT WINBASEAPI BOOL WINAPI KERNEL32$RemoveDirectoryA(LPCSTR);
 
 void go(char * args, int len) {
@@ -30,6 +31,14 @@ void go(char * args, int len) {
             BeaconPrintf(CALLBACK_OUTPUT, "Folder successfully deleted: %s", path);
          } else {
             BeaconPrintf(CALLBACK_ERROR, "Folder couldn't be deleted, check that it's empty before trying to delete.");
+         }
+         NET_API_STATUS res;
+         res = NETAPI32$NetShareDel(NULL, shareName, 0);
+         if(res==0) {
+            BeaconPrintf(CALLBACK_OUTPUT, "Share successfuly deleted");
+         }
+         else {
+            BeaconPrintf(CALLBACK_ERROR, "Error, check this code on http://msdn2.microsoft.com/en-us/library/aa370674.aspx: %d", res);
          }
          
       }

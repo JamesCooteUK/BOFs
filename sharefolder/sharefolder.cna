@@ -6,8 +6,8 @@ beacon_command_register(
 
 beacon_command_register(
 "sharefolder_delete", 
-"Delete folder.",
-"sharefolder delete C:\\path\\to\\folder",
+"Delete folder and share.",
+"sharefolder delete C:\\path\\to\\folder shareName",
 );
 
 
@@ -49,7 +49,7 @@ alias sharefolder_delete {
 	# figure out the arch of this session
 	$barch  = barch($1);
 
-	if(size(@_) != 2)
+	if(size(@_) != 3)
 	{
 		berror($1, "Incorrect usage!");
 		berror($1, beacon_command_detail("sharefolder_delete"));
@@ -63,7 +63,7 @@ alias sharefolder_delete {
 
 	
 	# pack our arguments
-	$args = bof_pack($1, "zZi", $2, "", 1);
+	$args = bof_pack($1, "zZi", $2, $3, 1);
 		
 	# announce what we're doing
 	btask($1, "Deleting folder (@jkcoote)");
